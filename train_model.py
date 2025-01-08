@@ -15,7 +15,8 @@ model.fit(X_train, y_train)
 
 # Test the model
 predictions = model.predict(X_test)
-print(f"Accuracy: {accuracy_score(y_test, predictions)}")
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy}")
 
 # Save the model
 joblib.dump(model, 'model.pkl')
