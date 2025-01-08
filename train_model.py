@@ -16,7 +16,9 @@ model.fit(X_train, y_train)
 # Test the model
 predictions = model.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
-print(f"Accuracy: {accuracy}")
+
+# Split long print statement into two lines to resolve E501
+print("Accuracy: {}".format(accuracy))
 
 # Save the model
 joblib.dump(model, 'model.pkl')
