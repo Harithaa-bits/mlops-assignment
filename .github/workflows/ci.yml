@@ -29,7 +29,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: lint
+    needs: lint  # Ensures 'test' runs after 'lint'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -50,12 +50,19 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: test
+    needs: test  # Ensures 'deploy' runs only if 'test' is successful
+    if: success()  # Ensures 'deploy' runs only if previous jobs were successful
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Deploy to server (this is an example step)
+      - name: Deploy to server
         run: |
           echo "Deploying application..."
-
+          # Add deployment commands here
+          
+      - name: Handle failure (optional step)
+        if: failure()  # This block will run only if the 'deploy' step fails
+        run: |
+          echo "Deployment failed! Investigate previous job logs."
+          # Optionally, you could notify via email, Slack, etc.
