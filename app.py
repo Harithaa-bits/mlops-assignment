@@ -12,7 +12,8 @@ model = joblib.load('model.pkl')
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json()  # Expecting JSON data
-    prediction = model.predict(np.array(data['input']).reshape(1, -1))  # Reshaping input for prediction
+    input_data = np.array(data['input']).reshape(1, -1)  # Reshaping input for prediction
+    prediction = model.predict(input_data)
     return jsonify({'prediction': prediction.tolist()})
 
 
