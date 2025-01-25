@@ -7,7 +7,8 @@ import joblib
 
 # Load dataset
 iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.2)  # Split into train/test
 
 # Train a RandomForestClassifier
 model = RandomForestClassifier()
@@ -18,8 +19,7 @@ predictions = model.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
 
 # Split long print statement into two lines to resolve E501
-print("Accuracy: {}".format(
-    accuracy))  
+print("Accuracy: {}".format(accuracy)) 
 
 # Save the model
 joblib.dump(model, 'model.pkl')
