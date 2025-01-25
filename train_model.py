@@ -18,7 +18,8 @@ predictions = model.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
 
 # Split long print statement into two lines to resolve E501
-print("Accuracy: {}".format(accuracy))
+print("Accuracy: {}".format(
+    accuracy))  
 
 # Save the model
 joblib.dump(model, 'model.pkl')
