@@ -73,15 +73,16 @@ jobs:
 
       - name: Save the model
         run: |
-          python train_model.py  # This should create 'model.pkl'
+          python train_model.py
 
-      # Upload model to EC2 using SCP
-      - name: Upload model to EC2
+      - name: Add EC2 host to known_hosts and upload model
         run: |
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem  # Store the private key content temporarily
-          chmod 600 private_key.pem  # Make the private key file secure
-          scp -i private_key.pem model.pkl ubuntu@13.51.196.138:/home/ubuntu/  # Change username if needed
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 13.51.196.138 >> ~/.ssh/known_hosts
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem model.pkl ubuntu@13.51.196.138:/home/ubuntu/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'  
+          AWS_DEFAULT_REGION: 'us-east-1'
