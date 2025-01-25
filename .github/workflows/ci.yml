@@ -32,7 +32,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: lint
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -46,18 +46,33 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    # Install pytest explicitly to ensure it's available during testing
+    - name: Install pytest
+      run: |
+        pip install pytest
+
     - name: Run tests
       run: |
-        pytest
+        pytest --maxfail=1 --disable-warnings -q  # You can customize options here
 
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Deploy to server (this is an example step)
-        run: |
-          echo "Deploying application..."
 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Deploy model
+      run: |
+        # You can deploy your model here, e.g., using Heroku, AWS, or any other service
+        curl -X POST https://your-api-url.com/deploy -d @model.pkl
