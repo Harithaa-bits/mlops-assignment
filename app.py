@@ -18,5 +18,9 @@ def predict():
 
 
 if __name__ == "__main__":
-    # Run the app on port 5000 (can be any port, just make sure it's open in the security group)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Run the app on port 5000 (make sure the port is open in the security group)
+    app.run(
+        debug=True,
+        host='0.0.0.0',
+        port=5000
+    )  # Line breaks to avoid exceeding 79 characters
