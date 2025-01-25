@@ -1,9 +1,10 @@
 # test_train_model.py
-import pytest
+
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+
 
 def test_model_accuracy():
     # Load dataset
@@ -20,4 +21,4 @@ def test_model_accuracy():
     predictions = model.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
 
-    assert accuracy > 0.8  # Example threshold, adjust as needed
+    assert accuracy > 0.8
