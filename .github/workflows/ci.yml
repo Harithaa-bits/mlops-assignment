@@ -13,66 +13,76 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Lint Python files
-      run: |
-        pip install flake8
-        flake8 .
+      - name: Lint Python files
+        run: |
+          pip install flake8
+          flake8 .
 
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    # Install pytest explicitly to ensure it's available during testing
-    - name: Install pytest
-      run: |
-        pip install pytest
+      - name: Install pytest
+        run: |
+          pip install pytest
 
-    - name: Run tests
-      run: |
-        pytest --maxfail=1 --disable-warnings -q  # You can customize options here
+      - name: Run tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q
 
   deploy:
     runs-on: ubuntu-latest
     needs: test
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Deploy model
-      run: |
-        # You can deploy your model here, e.g., using Heroku, AWS, or any other service
-        curl -X POST https://your-api-url.com/deploy -d @model.pkl
+      - name: Save the model
+        run: |
+          python train_model.py
+
+      - name: Add EC2 host to known_hosts and upload model
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 13.51.196.138 >> ~/.ssh/known_hosts
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem model.pkl ubuntu@13.51.196.138:/home/ubuntu/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
